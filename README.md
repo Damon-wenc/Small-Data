@@ -1,9 +1,11 @@
 # Small-Data
 * In honor of **big data** :D
+
 I've just got some 'small data' here. There are several small programs about getting, parsing and analysing info on some websites. As most cases are Chinese sites, I'll describe my ideas in Chinese~ You may read my code for more information ~\(≧▽≦)/~
 
 ## 说明
 验证版本: Python V2.7.6
+
 以下的只是简单的几个Python程序, 用以收集一些网站上我突发奇想的不严谨的信息, 仅做参考~
 
 ### movie_years.py
@@ -12,11 +14,17 @@ I've just got some 'small data' here. There are several small programs about get
 下面是一小段Python输出
 
 > ......
+
 > year 1994 has 12 great moives
+
 > year 1995 has 7 great moives
+
 > year 1996 has 4 great moives
+
 > year 1997 has 5 great moives
+
 > year 1998 has 11 great moives
+
 > ......
 
 结果也正是说明这不靠谱╮(╯▽╰)╭, 或许可以换个思路? or 再改善下?
