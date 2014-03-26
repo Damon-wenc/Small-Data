@@ -8,7 +8,7 @@ I've just got some 'small data' here. There are several small programs about get
 
 以下的只是简单的几个Python程序, 用以收集一些网站上我突发奇想的不严谨的信息, 仅做参考~
 
-### movie_years.py
+### 1. movie_years.py
 这个是我从[豆瓣电影TOP250](http://movie.douban.com/top250?start=0&filter=&type=)系列直接抓取下来的, 目的是想查看一下伟大电影的诞生与经济大小年是否有对应关系. 当然这个实现方法明显是不合理的, 一是我的样品库太小了, 二是好多好电影, 特别是近年的, 或许需要时间及机缘才会被社会所接纳对吧(例如大话西游), 所以这里只是仅供一个构思, 主要是练习一下Python对网页的抓取.
 
 下面是一小段Python输出
