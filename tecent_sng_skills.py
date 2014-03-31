@@ -5,7 +5,7 @@ import urllib2
 from collections import OrderedDict
 
 skill_heat = OrderedDict()
-skills_array = ['c、', 'c/', 'c++', 'mysql', 'tcp/ip', 'cdn', 'linux', 'javascript', 'html',
+skills_array = ['c', 'c++', 'mysql', 'tcp/ip', 'cdn', 'linux', 'javascript', 'html',
                 'nosql', 'hadoop', 'spark', 'storm', 'lbs', '经验', '架构', '容灾', '优化',
                 '重构', '稳定', '沟通', '压力', '主动', '好学', '分布式', '云计算', '互联网',
                 '数据库', '富媒体', '高性能', '高可靠', '高并发', '大数据', '海量数据', '网络处理',
@@ -23,6 +23,13 @@ html = urllib2.urlopen('http://hr.tencent.com/position_detail.php?id=15013&keywo
 
 
 for name, address in skill_heat.items():
+    if name == 'c':
+        if html.lower().find('c、') != -1:
+            skill_heat[name] += 1
+            continue
+        if html.lower().find('c/') != -1:
+            skill_heat[name] += 1
+            continue
     if html.lower().find(name) != -1:
         skill_heat[name] += 1
 
