@@ -18,21 +18,18 @@ skills_array = ['c、', 'c/', 'c++', 'mysql', 'tcp/ip', 'cdn', 'linux', 'javascr
 for item in skills_array:
     skill_heat[item] = 0
 
+for name, address in skill_heat.items():
+    print 'skill: %-20s heat: [%d]' %(name.decode('utf-8'), address)
 
 html = urllib2.urlopen('http://hr.tencent.com/position_detail.php?id=15013&keywords=SNG%20%E5%90%8E%E5%8F%B0&tid=0&lid=2218').read()
 
-#print html.lower()
-#print type(html)
-#print 'debug--------'
-#print html.lower().find('c/c++')
+
 for name, address in skill_heat.items():
-    if html.lower().find(name):
-        #print name
-        address += 1
-        print 'debug------address = %d' %address
+    if html.lower().find(name) != -1:
+        skill_heat[name] += 1
+        print name.decode('utf-8'), address
 
 
 for name, address in skill_heat.items():
-    #print 'skill: %s \t heat: [%d]' %(name.decode('utf-8'), address)
     print 'skill: %-20s heat: [%d]' %(name.decode('utf-8'), address)
 
