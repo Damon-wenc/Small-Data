@@ -38,7 +38,7 @@ for i in range(0, page):
     #for w in rank_re.findall(html):
         #print w
 for item in movies:
-    print '%s\t\t\t%s\t\t\t%s\t\t\t%s' %(item[0], item[1], item[2], item[3])
+    print '%s\t\t\t%s\t\t\t%s\t\t\t%s' %(item[0].decode('utf-8'), item[1].decode('utf-8'), item[2].decode('utf-8'), item[3].decode('utf-8'))
 
 trend = {}
 for item in movies:
@@ -56,4 +56,5 @@ while year < 2014:
     if str(year) in trend:
         print 'year %d has %d great moives' %(year, trend[str(year)])
     year = year + 1
+print 
     
