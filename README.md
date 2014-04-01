@@ -30,3 +30,24 @@ I've just got some 'small data' here. There are several small programs about get
 结果也正是说明这不靠谱╮(╯▽╰)╭, 或许可以换个思路? or 再改善下?
 
 详情请自行阅读及运行movie_years.py
+
+### 2.tecent_sng_skills.py
+这个.. 是想找出腾讯SNG部后台招聘所需要哪些技能, 期待针对性学习一下, 争取能那啥对吧. 程序通过遍历所有"SNG + 后台"招聘网页, 对其中skills_array数组中的关键字进行热度记录, 最后按照热度从低到高的顺序排列出来,. 哈哈, 提高匹配度^_^o~ 努力！
+
+下面是一小段Python输出
+
+> ......
+
+> skill: 大容量网络			 heat [9]
+
+> skill: tcp/ip			 heat [10]
+
+> skill: 数据结构			 heat [11]
+
+> skill: 网络安全			 heat [11]
+
+> skill: c/c++			 heat [21]
+
+> ......
+
+预知详情如何, 还请亲自运行程序及查看源码
