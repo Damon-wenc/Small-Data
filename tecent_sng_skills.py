@@ -18,22 +18,22 @@ skills_array = ['c', 'c++', 'mysql', 'tcp/ip', 'cdn', 'linux', 'javascript', 'ht
 for item in skills_array:
     skill_heat[item] = 0
 
+def web_parse(url):
+    html = urllib2.urlopen(url).read()
 
-html = urllib2.urlopen('http://hr.tencent.com/position_detail.php?id=15013&keywords=SNG%20%E5%90%8E%E5%8F%B0&tid=0&lid=2218').read()
 
-
-for name, address in skill_heat.items():
-    if name == 'c':
-        if html.lower().find('c、') != -1:
+    for name, address in skill_heat.items():
+        if name == 'c':
+            if html.lower().find('c、') != -1:
+                skill_heat[name] += 1
+                continue
+            if html.lower().find('c/') != -1:
+                skill_heat[name] += 1
+                continue
+        if html.lower().find(name) != -1:
             skill_heat[name] += 1
-            continue
-        if html.lower().find('c/') != -1:
-            skill_heat[name] += 1
-            continue
-    if html.lower().find(name) != -1:
-        skill_heat[name] += 1
 
-
+web_parse('http://hr.tencent.com/position_detail.php?id=15013&keywords=SNG%20%E5%90%8E%E5%8F%B0&tid=0&lid=2218')
 for name, address in OrderedDict(sorted(skill_heat.items(), key=lambda t: t[1])).items():
     print 'skill: %-20s heat: [%d]' %(name.decode('utf-8'), address)
 
@@ -41,3 +41,5 @@ for name, address in OrderedDict(sorted(skill_heat.items(), key=lambda t: t[1]))
 #for name, address in skill_heat.items():
     #print 'skill: %-20s heat: [%d]' %(name.decode('utf-8'), address)
 
+#if __name__ == '__main__':
+    #
