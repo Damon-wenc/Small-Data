@@ -5,8 +5,8 @@ import urllib2
 from collections import OrderedDict
 
 skill_heat = OrderedDict()
-skills_array = ['c', 'c++', 'mysql', 'tcp/ip', 'cdn', 'linux', 'javascript', 'html',
-                'nosql', 'hadoop', 'spark', 'storm', 'lbs', '经验', '架构', '容灾', '优化',
+skills_array = ['c', 'c++', 'mysql', 'tcp/ip', 'cdn', 'linux', 'nosql', 
+                'hadoop', 'spark', 'storm', 'lbs', '经验', '架构', '容灾', '优化',
                 '重构', '稳定', '沟通', '压力', '主动', '好学', '分布式', '云计算', '互联网',
                 '数据库', '富媒体', '高性能', '高可靠', '高并发', '大数据', '海量数据', '网络处理',
                 '存储架构', '数据处理', '精通c++', '安全逻辑', '通信系统', '面向对象', '操作系统',
@@ -33,13 +33,37 @@ def web_parse(url):
         if html.lower().find(name) != -1:
             skill_heat[name] += 1
 
-web_parse('http://hr.tencent.com/position_detail.php?id=15013&keywords=SNG%20%E5%90%8E%E5%8F%B0&tid=0&lid=2218')
+#web_parse('http://hr.tencent.com/position_detail.php?id=15013&keywords=SNG%20%E5%90%8E%E5%8F%B0&tid=0&lid=2218')
+
+
+
+
+
+def get_url():
+    base_url = 'http://hr.tencent.com/position.php?keywords=SNG+%E5%90%8E%E5%8F%B0&lid=2218&tid=0'
+
+    position_num_re = re.compile(r'class="lightblue total">(\d+?)</span>个职位')
+    position_url_re = re.compile(r'<a target="_blank" href="(.+?)">SNG')
+    position_num = 0
+    position_url = ''
+    html = urllib2.urlopen(base_url).read()
+    #for x in position_num_re.findall(html):
+        #position_num = x
+    for y in position_url_re.findall(html):
+        #print y.decode('utf-8')
+        web_parse('http://hr.tencent.com/' + y)
+        #break
+    for name, address in OrderedDict(sorted(skill_heat.items(), key=lambda t: t[1])).items():
+        print 'skill: %-20s heat: [%d]' %(name.decode('utf-8'), address)
+
+    
+#sorted result
 for name, address in OrderedDict(sorted(skill_heat.items(), key=lambda t: t[1])).items():
     print 'skill: %-20s heat: [%d]' %(name.decode('utf-8'), address)
 
 #un-sorted result
 #for name, address in skill_heat.items():
-    #print 'skill: %-20s heat: [%d]' %(name.decode('utf-8'), address)
+    #print 'skill: %-20s heat: [%d]' %(name.decode('utf-8'), address)    
 
-#if __name__ == '__main__':
-    #
+if __name__ == '__main__':
+    get_url()
