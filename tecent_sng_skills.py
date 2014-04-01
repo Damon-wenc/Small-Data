@@ -4,11 +4,13 @@ import re
 import urllib2
 from collections import OrderedDict
 
+
+######## construct skill keywords Dict ########
 skill_heat = OrderedDict()
 skills_array = ['c/c++', 'python', 'mysql', 'tcp/ip', 'cdn', 'linux', 'nosql', 
                 'hadoop', 'spark', 'storm', 'lbs', '经验', '架构', '容灾', '优化', '脚本', 
                 '重构', '稳定', '沟通', '压力', '主动', '好学', '分布式', '云计算', '自动化', '虚拟化'
-                '数据库', '富媒体', '高性能', '高可靠', '高并发', '大数据', '海量数据', '网络处理', '熟悉c++', 
+                '数据库', '富媒体', '高性能', '高可靠', '高并发', '大数据', '海量数据', '网络处理', 
                 '存储架构', '数据处理', '精通c++', '安全逻辑', '通信系统', '面向对象', '操作系统', '索引系统', 
                 '软件工程', '设计模式', '数据结构', '网络安全', '安全漏洞', '网络攻击', '网络并发',
                 '数据分析', '逻辑思维', '实时计算', '实时推荐', '广告变现', '广告后台', '分布式计算', '大容量网络',
@@ -18,7 +20,7 @@ for item in skills_array:
     skill_heat[item] = 0
 
 
-
+######## parse web(url) and update keywords heat in Dict ########
 def web_parse(url):
     html = urllib2.urlopen(url).read()
 
@@ -34,6 +36,7 @@ def web_parse(url):
             skill_heat[name] += 1
 
 
+######## main function ########
 def get_info():
     start_url = 'http://hr.tencent.com/position.php?keywords=SNG+%E5%90%8E%E5%8F%B0&lid=2218&tid=0'
 
@@ -43,36 +46,31 @@ def get_info():
     position_url = ''
     html = urllib2.urlopen(start_url).read()
     for x in position_num_re.findall(html):
-        position_num = int(x)
-        print '%d SNG positions have been found. Please wait a little while...' %position_num
+        position_num = int(x)   #find how many positions are avaliable
+        print '%d SNG positions have been found. Please wait a little while...\n\n' %position_num
 
     base_url = 'http://hr.tencent.com/position.php?keywords=SNG%s后台&lid=2218&tid=0&start=%d#a'
     index = 0
-    while index <= (position_num / 10):
-        target_url = base_url %('%20', index * 10)
-        #print target_url.decode('utf-8')
+    while index <= (position_num / 10): #each page got 10 positions at most
+        target_url = base_url %('%20', index * 10) #get position index page
         html = urllib2.urlopen(target_url).read()
         for y in position_url_re.findall(html):
             web_parse('http://hr.tencent.com/' + y)
         index += 1
     
-        #print y.decode('utf-8')
-        
-        #break
     display_result()
-    #for name, address in OrderedDict(sorted(skill_heat.items(), key=lambda t: t[1])).items():
-        #print 'skill: %-20s heat: [%d]' %(name.decode('utf-8'), address)
 
 
-
+######## show keywords heat ########
 def display_result():
+    print 'skills heat are as below:\n'
     #sorted result
     for name, address in OrderedDict(sorted(skill_heat.items(), key=lambda t: t[1])).items():
-        print 'skill: %-20s heat: [%d]' %(name.decode('utf-8'), address)
+        print 'skill: %s\t\t\t heat [%d]' %(name.decode('utf-8'), address)
 
     #un-sorted result
     #for name, address in skill_heat.items():
-        #print 'skill: %-20s heat: [%d]' %(name.decode('utf-8'), address)
+    #    print 'skill: %-20s heat: [%d]' %(name.decode('utf-8'), address)
 
     print '为了高匹配^_^o~ 努力！'
 
