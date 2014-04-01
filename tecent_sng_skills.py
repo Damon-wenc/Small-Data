@@ -7,12 +7,13 @@ from collections import OrderedDict
 skill_heat = OrderedDict()
 skills_array = ['c', 'c++', 'mysql', 'tcp/ip', 'cdn', 'linux', 'nosql', 
                 'hadoop', 'spark', 'storm', 'lbs', '经验', '架构', '容灾', '优化',
-                '重构', '稳定', '沟通', '压力', '主动', '好学', '分布式', '云计算', '互联网',
+                '重构', '稳定', '沟通', '压力', '主动', '好学', '分布式', '云计算',
                 '数据库', '富媒体', '高性能', '高可靠', '高并发', '大数据', '海量数据', '网络处理',
                 '存储架构', '数据处理', '精通c++', '安全逻辑', '通信系统', '面向对象', '操作系统',
                 '软件工程', '设计模式', '数据结构', '网络安全', '安全漏洞', '网络攻击', '网络并发',
                 '数据分析', '逻辑思维', '实时计算', '实时推荐', '分布式计算', '大容量网络',
-                '大容量通信', '进程间通讯', '后台业务开发', '计算机基础结构', '互联网应用协议']
+                '大容量通信', '进程间通讯', '后台业务开发', '互联网业务', '无线互联网', 
+                '计算机基础结构', '互联网应用协议']
 
 
 for item in skills_array:
@@ -40,18 +41,28 @@ def web_parse(url):
 
 
 def get_url():
-    base_url = 'http://hr.tencent.com/position.php?keywords=SNG+%E5%90%8E%E5%8F%B0&lid=2218&tid=0'
+    start_url = 'http://hr.tencent.com/position.php?keywords=SNG+%E5%90%8E%E5%8F%B0&lid=2218&tid=0'
 
     position_num_re = re.compile(r'class="lightblue total">(\d+?)</span>个职位')
     position_url_re = re.compile(r'<a target="_blank" href="(.+?)">SNG')
     position_num = 0
     position_url = ''
-    html = urllib2.urlopen(base_url).read()
-    #for x in position_num_re.findall(html):
-        #position_num = x
-    for y in position_url_re.findall(html):
+    html = urllib2.urlopen(start_url).read()
+    for x in position_num_re.findall(html):
+        position_num = int(x)
+
+    base_url = 'http://hr.tencent.com/position.php?keywords=SNG%s后台&lid=2218&tid=0&start=%d#a'
+    index = 0
+    while index <= (position_num / 10):
+        target_url = base_url %('%20', index * 10)
+        print target_url.decode('utf-8')
+        html = urllib2.urlopen(target_url).read()
+        for y in position_url_re.findall(html):
+            web_parse('http://hr.tencent.com/' + y)
+        index += 1
+    
         #print y.decode('utf-8')
-        web_parse('http://hr.tencent.com/' + y)
+        
         #break
     for name, address in OrderedDict(sorted(skill_heat.items(), key=lambda t: t[1])).items():
         print 'skill: %-20s heat: [%d]' %(name.decode('utf-8'), address)
