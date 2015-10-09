@@ -10,11 +10,6 @@
 import urllib2
 import lxml.html as parser
 
-# http://www.xdytt.com/?item=movie
-# http://www.xdytt.com/page/1?item=movie
-# http://www.xdytt.com/page/2?item=movie
-# http://www.xdytt.com/page/3?item=movie
-# http://www.xdytt.com/page/165?item=movie
 
 # GLOBAL VARIABLES
 OUT_OF_RANGE_FLAG = "没找到您想要的资源，试试改变搜索条件吧！"
@@ -22,7 +17,7 @@ movie_urls        = []
 
 
 def get_movie_urls():
-    global OUT_OF_RANGE_FLAG
+    global OUT_OF_RANGE_FLAG, movie_urls
     page_index = 1
 
     while True:
@@ -42,6 +37,16 @@ def get_movie_urls():
             print "All movie resources have been found. Operation done."
             break
 
+        try:
+            html = parser.document_fromstring(htmlSource)
+            urls = html.xpath("//div/div[2]/h1/a/@href")
+        except:
+            print "Analysis html failed :("
+
+        for url in urls:
+            movie_urls.append(url[7:])
+
+        #parse next page
         page_index += 1
 
 
