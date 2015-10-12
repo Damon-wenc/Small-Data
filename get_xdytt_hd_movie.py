@@ -88,6 +88,7 @@ def Analysis_single_movie(url):
         magnets       = html.xpath("//li[*]/span[1]/a[2]/@href")
         sizes         = html.xpath("//li[*]/span[2]/span/text()")
         movie_info.append("%s" %movie_name[0])
+        movie_info.append("%.1f" %vote)
         movie_info.append("%s" %movie_summary[0])
 
         index = 0
@@ -127,14 +128,35 @@ def Analysis_movies():
     for url in g_movie_urls:
         Analysis_single_movie(url)
 
-    for i in g_movie_infos:
-        for j in i:
-            print j
+    return 0
+ 
+def Save_to_html():
+    global g_movie_infos
+    print 1
+    html_head = "<!DOCTYPE html><html><head><meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\"><title>xdytt.com小电影天堂FHD索引</title></head><body><ol>"
+    html_end = "</ol></body></html>"
+
+    try:
+        f = open("movie_info.html", "w")
+        f.write(html_head)
+        for movie in g_movie_infos:
+            urls = movie[3]
+            f.write("<li><h4>%s</h4><b>%s</b><p><small>%s</small></p><ul>" %(movie[0].encode("utf-8"), movie[1].encode("utf-8"), movie[2].encode("utf-8")))
+            for url in urls:
+                f.write("<div align=left><a href=\"%s\">%s</a></div><div align=right><i>%s</i></div>" 
+                    %(url[2].encode("utf-8"), url[0].encode("utf-8"), url[1].encode("utf-8")))
+            f.write("</ul></li>")
+        f.write(html_end)
+
+    finally:
+        print 10
+        f.close()
 
 def run():
     #get_movie_urls()
     Analysis_movies()
     #Analysis_single_movie("http://www.xdytt.com/subject/12101.html")
+    Save_to_html()
 
 if __name__ == "__main__":
     run()
