@@ -13,12 +13,14 @@ import lxml.html as parser
 
 # GLOBAL VARIABLES
 OUT_OF_RANGE_FLAG = "没找到您想要的资源，试试改变搜索条件吧！"
-movie_urls        = []
 VOTE_ThRESHOLD    = 6.0
+g_movie_urls      = []
+g_movie_infos     = []
+
 
 
 def get_movie_urls():
-    global OUT_OF_RANGE_FLAG, movie_urls
+    global OUT_OF_RANGE_FLAG, g_movie_urls
     page_index = 1
 
     while True:
@@ -45,14 +47,17 @@ def get_movie_urls():
             print "Analysis html failed :("
 
         for url in urls:
-            movie_urls.append(url)
+            g_movie_urls.append(url)
         break
 
         #parse next page
         page_index += 1
 
+    return 0
+
 def Analysis_single_movie(url):
-    global VOTE_ThRESHOLD
+    global VOTE_ThRESHOLD, g_movie_infos
+    movie_info = []
 
     try:
         sock = urllib2.urlopen(url)
@@ -77,30 +82,59 @@ def Analysis_single_movie(url):
         if "BluRay" not in htmlSource:
             return 1
 
-        titles = html.xpath("//li[*]/span[1]/a[1]/@title")
-        magnets= html.xpath("//li[*]/span[1]/a[2]/@href")
-        sizes  = html.xpath("//li[*]/span[2]/span/text()")
+        movie_name    = html.xpath("//div/div/div[1]/h1/text()")
+        movie_summary = html.xpath("//*[@id='summary']/p/text()")
+        titles        = html.xpath("//li[*]/span[1]/a[1]/@title")
+        magnets       = html.xpath("//li[*]/span[1]/a[2]/@href")
+        sizes         = html.xpath("//li[*]/span[2]/span/text()")
+        movie_info.append("%s" %movie_name[0])
+        movie_info.append("%s" %movie_summary[0])
+
         index = 0
-        for title in titles:
+        magnet_info = []
+        found_title = []
+
+        for title in titles:  
             if "BluRay" in title and "1080P" in title:
-                print titles[index]
-                print sizes[index]
-                print magnets[index]
+                tmp_info = []
+                #sometimes magnets are duplicated
+                if "%s" %titles[index][5:] not in found_title:
+                    found_title.append("%s" %titles[index][5:])
+                    tmp_info.append("%s" %titles[index][5:])
+                    tmp_info.append("%s" %sizes[index])
+                    tmp_info.append("%s" %magnets[index])
+
+                if len(tmp_info):
+                    magnet_info.append(tmp_info)
             index += 1
 
+        if len(magnet_info):
+            movie_info.append(magnet_info)
 
+        if len(movie_info):
+            g_movie_infos.append(movie_info)
+        
+        return 0
 
     except:
         print "Get vote of movie failed."
         return -1
 
+def Analysis_movies():
+    global g_movie_urls, g_movie_infos
+    g_movie_urls = ["http://www.xdytt.com/subject/12101.html", "http://www.xdytt.com/subject/11751.html"]
 
+    for url in g_movie_urls:
+        Analysis_single_movie(url)
 
+    for i in g_movie_infos:
+        for j in i:
+            print j
 
 def run():
     #get_movie_urls()
+    Analysis_movies()
     #Analysis_single_movie("http://www.xdytt.com/subject/12101.html")
-    Analysis_single_movie("http://www.xdytt.com/subject/11751.html")
 
 if __name__ == "__main__":
     run()
