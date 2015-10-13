@@ -48,7 +48,9 @@ def get_movie_urls():
 
         for url in urls:
             g_movie_urls.append(url)
-        break
+        
+        if page_index >= 5:
+            break
 
         #parse next page
         page_index += 1
@@ -74,7 +76,12 @@ def Analysis_single_movie(url):
         #Pre check #1: skip the vote of movie which is lower than expected
         vote_value = html.xpath("//div[1]/div[2]/div[3]/span[2]/text()")
         vote = "%s" %vote_value[0]
-        vote = float(vote)
+
+        try:
+            vote = float(vote)
+        except:
+            return 1
+
         if vote < VOTE_ThRESHOLD:
             return 1
 
@@ -111,6 +118,8 @@ def Analysis_single_movie(url):
 
         if len(magnet_info):
             movie_info.append(magnet_info)
+        else:   #sometimes there are only 720P BluRay resources, skip this one
+            return 1
 
         if len(movie_info):
             g_movie_infos.append(movie_info)
@@ -118,12 +127,12 @@ def Analysis_single_movie(url):
         return 0
 
     except:
-        print "Get vote of movie failed."
+        print "Get movie info failed."
         return -1
 
 def Analysis_movies():
     global g_movie_urls, g_movie_infos
-    g_movie_urls = ["http://www.xdytt.com/subject/12101.html", "http://www.xdytt.com/subject/11751.html"]
+    #g_movie_urls = ["http://www.xdytt.com/subject/12101.html", "http://www.xdytt.com/subject/11751.html"]
 
     for url in g_movie_urls:
         Analysis_single_movie(url)
@@ -132,7 +141,7 @@ def Analysis_movies():
  
 def Save_to_html():
     global g_movie_infos
-    print 1
+
     html_head = "<!DOCTYPE html><html><head><meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\"><title>xdytt.com小电影天堂FHD索引</title></head><body><ol>"
     html_end = "</ol></body></html>"
 
@@ -149,14 +158,16 @@ def Save_to_html():
         f.write(html_end)
 
     finally:
-        print 10
         f.close()
 
 def run():
-    #get_movie_urls()
+    get_movie_urls()
     Analysis_movies()
     #Analysis_single_movie("http://www.xdytt.com/subject/12101.html")
     Save_to_html()
 
 if __name__ == "__main__":
-    run()
+    from timeit import Timer
+    t = Timer("run()", "from __main__ import run")
+    print "runtine time of script is %.1f seconds" %t.timeit(1)
+    #run()
