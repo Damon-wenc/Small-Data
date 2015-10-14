@@ -50,8 +50,8 @@ def get_movie_urls():
         for url in urls:
             g_movie_urls.append(url)
         
-        if page_index >= 20:
-            break
+        # if page_index >= 20:
+        #     break
 
         #parse next page
         page_index += 1
@@ -62,11 +62,13 @@ def Analysis_single_movie(url):
     global VOTE_ThRESHOLD, g_movie_infos
     movie_info = []
 
-    # try:
-    htmlSource = urllib2.urlopen(url, timeout = 10000).read()
-    # except:
-    #     print "Analysis url[%s] failed." %url
-    #     return -1
+    try:
+        #Due to the bandwitdh, we need a timeout method to 
+        resp = urllib2.urlopen(url, timeout = 10000)
+        htmlSource = resp.read()
+    except:
+        print "Analysis url[%s] failed." %url
+        return -1
 
     try:
         html = parser.document_fromstring(htmlSource)
@@ -131,22 +133,22 @@ def Analysis_single_movie(url):
 def Analysis_movies():
     global g_movie_urls
 
-    #g_movie_urls = ["http://www.xdytt.com/subject/12101.html", "http://www.xdytt.com/subject/11751.html"]
-
+    # Method 1, traditional ways
     # for url in g_movie_urls:
     #     Analysis_single_movie(url)
 
+    # Method 2, 'free-style' spawn, not suitable in this situation
     # jobs = [gevent.spawn(Analysis_single_movie, url) for url in g_movie_urls]
     # gevent.joinall(jobs)
 
+    # Method 3, 'limited-multithread' ways, I'll take this
     pool.map(Analysis_single_movie, g_movie_urls)
-    # jobs = [pool.map(Analysis_single_movie, url) for url in g_movie_urls]
 
     return 0
  
 def Save_to_html():
     global g_movie_infos
-    print "array size is %d, len is %d" %(g_movie_infos.__sizeof__(), len(g_movie_infos))
+    print "There are %d movies" %len(g_movie_infos)
 
     html_head = "<!DOCTYPE html><html><head><meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\"><title>xdytt.com小电影天堂FHD索引</title></head><body><ol>"
     html_end = "</ol></body></html>"
@@ -175,4 +177,3 @@ if __name__ == "__main__":
     from timeit import Timer
     t = Timer("run()", "from __main__ import run")
     print "runtine time of script is %.1f seconds" %t.timeit(1)
-    #run()
