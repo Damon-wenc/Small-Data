@@ -10,7 +10,8 @@
 import urllib2
 import lxml.html as parser
 from gevent import monkey; monkey.patch_socket()
-import gevent
+from gevent.pool import Pool
+pool = Pool(40)
 
 
 # GLOBAL VARIABLES
@@ -29,12 +30,10 @@ def get_movie_urls():
         url = "http://www.xdytt.com/page/%d?item=movie" %page_index
         
         try:
-            sock = urllib2.urlopen(url)
-            htmlSource = sock.read()
-            sock.close()
+            resp = urllib2.urlopen(url)
+            htmlSource = resp.read()
         except:
             print "Get web page failed."
-            sock.close()
             break
 
 
@@ -51,7 +50,7 @@ def get_movie_urls():
         for url in urls:
             g_movie_urls.append(url)
         
-        if page_index >= 5:
+        if page_index >= 20:
             break
 
         #parse next page
@@ -63,14 +62,11 @@ def Analysis_single_movie(url):
     global VOTE_ThRESHOLD, g_movie_infos
     movie_info = []
 
-    try:
-        sock = urllib2.urlopen(url)
-        htmlSource = sock.read()
-        sock.close()
-    except:
-        print "Get web page failed."
-        sock.close()
-        return -1
+    # try:
+    htmlSource = urllib2.urlopen(url, timeout = 10000).read()
+    # except:
+    #     print "Analysis url[%s] failed." %url
+    #     return -1
 
     try:
         html = parser.document_fromstring(htmlSource)
@@ -133,20 +129,24 @@ def Analysis_single_movie(url):
         return -1
 
 def Analysis_movies():
-    global g_movie_urls, g_movie_infos
+    global g_movie_urls
+
     #g_movie_urls = ["http://www.xdytt.com/subject/12101.html", "http://www.xdytt.com/subject/11751.html"]
 
-    #for url in g_movie_urls:
-        #Analysis_single_movie(url)
+    # for url in g_movie_urls:
+    #     Analysis_single_movie(url)
 
-    jobs = [gevent.spawn(Analysis_single_movie, url) for url in g_movie_urls]
-    gevent.joinall(jobs, timeout = 1000)
+    # jobs = [gevent.spawn(Analysis_single_movie, url) for url in g_movie_urls]
+    # gevent.joinall(jobs)
+
+    pool.map(Analysis_single_movie, g_movie_urls)
+    # jobs = [pool.map(Analysis_single_movie, url) for url in g_movie_urls]
 
     return 0
  
 def Save_to_html():
     global g_movie_infos
-    print g_movie_infos.__sizeof__()
+    print "array size is %d, len is %d" %(g_movie_infos.__sizeof__(), len(g_movie_infos))
 
     html_head = "<!DOCTYPE html><html><head><meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\"><title>xdytt.com小电影天堂FHD索引</title></head><body><ol>"
     html_end = "</ol></body></html>"
@@ -169,7 +169,6 @@ def Save_to_html():
 def run():
     get_movie_urls()
     Analysis_movies()
-    #Analysis_single_movie("http://www.xdytt.com/subject/12101.html")
     Save_to_html()
 
 if __name__ == "__main__":
