@@ -3,12 +3,14 @@
 
 '''
 这个小程序是为了将一个电影网（小电影天堂）的资源遍历下保存下来，
-大致凭借2个依据：1. 1080p，2. 豆瓣评分6.0以上，
+大致凭借2个依据：1. BluRay && 1080p，2. 豆瓣评分6.0以上，
 
 '''
 
 import urllib2
 import lxml.html as parser
+from gevent import monkey; monkey.patch_socket()
+import gevent
 
 
 # GLOBAL VARIABLES
@@ -134,13 +136,17 @@ def Analysis_movies():
     global g_movie_urls, g_movie_infos
     #g_movie_urls = ["http://www.xdytt.com/subject/12101.html", "http://www.xdytt.com/subject/11751.html"]
 
-    for url in g_movie_urls:
-        Analysis_single_movie(url)
+    #for url in g_movie_urls:
+        #Analysis_single_movie(url)
+
+    jobs = [gevent.spawn(Analysis_single_movie, url) for url in g_movie_urls]
+    gevent.joinall(jobs, timeout = 1000)
 
     return 0
  
 def Save_to_html():
     global g_movie_infos
+    print g_movie_infos.__sizeof__()
 
     html_head = "<!DOCTYPE html><html><head><meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\"><title>xdytt.com小电影天堂FHD索引</title></head><body><ol>"
     html_end = "</ol></body></html>"
