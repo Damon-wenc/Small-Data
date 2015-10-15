@@ -11,7 +11,7 @@ import urllib2
 import lxml.html as parser
 from gevent import monkey; monkey.patch_socket()
 from gevent.pool import Pool
-pool = Pool(40)
+pool = Pool(30)
 
 
 # GLOBAL VARIABLES
@@ -38,7 +38,9 @@ def get_movie_urls():
 
 
         if OUT_OF_RANGE_FLAG in htmlSource:
-            print "All movie resources have been found. Operation done."
+            print "All movie resources have been found."
+            print "There are %d pages and %d movies in total." %(page_index -1, len(g_movie_urls))
+            print "Program are doing selection, please wait..."
             break
 
         try:
@@ -49,9 +51,6 @@ def get_movie_urls():
 
         for url in urls:
             g_movie_urls.append(url)
-        
-        # if page_index >= 20:
-        #     break
 
         #parse next page
         page_index += 1
@@ -70,10 +69,14 @@ def Analysis_single_movie(url):
         print "Analysis url[%s] failed." %url
         return -1
 
+    #Pre check #1: Check if HD("BluRay") resources exists
+        if "BluRay" not in htmlSource:
+            return 1
+
     try:
         html = parser.document_fromstring(htmlSource)
 
-        #Pre check #1: skip the vote of movie which is lower than expected
+        #Pre check #2: skip the vote of movie which is lower than expected
         vote_value = html.xpath("//div[1]/div[2]/div[3]/span[2]/text()")
         vote = "%s" %vote_value[0]
 
@@ -85,12 +88,11 @@ def Analysis_single_movie(url):
         if vote < VOTE_ThRESHOLD:
             return 1
 
-        #Pre check #2: Check if HD("BluRay") resources exists
-        if "BluRay" not in htmlSource:
-            return 1
-
         movie_name    = html.xpath("//div/div/div[1]/h1/text()")
-        movie_summary = html.xpath("//*[@id='summary']/p/text()")
+        try:
+            movie_summary = html.xpath("//*[@id='summary']/p/text()")
+        except:
+            movie_summary = ["暂无介绍"]
         titles        = html.xpath("//li[*]/span[1]/a[1]/@title")
         magnets       = html.xpath("//li[*]/span[1]/a[2]/@href")
         sizes         = html.xpath("//li[*]/span[2]/span/text()")
@@ -127,7 +129,7 @@ def Analysis_single_movie(url):
         return 0
 
     except:
-        print "Get movie info failed."
+        print "Get movie[%s] info failed, maybe unique html format, please check it manually." %url
         return -1
 
 def Analysis_movies():
@@ -150,7 +152,7 @@ def Save_to_html():
     global g_movie_infos
     print "There are %d movies" %len(g_movie_infos)
 
-    html_head = "<!DOCTYPE html><html><head><meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\"><title>xdytt.com小电影天堂FHD索引</title></head><body><ol>"
+    html_head = "<!DOCTYPE html><html><head><meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\"><style type=\"text/css\"> body {margin: 60px;} h1 {font-size: 20px;} b, p,div {font-size: 16px;} </style><title>xdytt.com小电影天堂FHD索引</title></head><body><ol>"
     html_end = "</ol></body></html>"
 
     try:
@@ -158,7 +160,7 @@ def Save_to_html():
         f.write(html_head)
         for movie in g_movie_infos:
             urls = movie[3]
-            f.write("<li><h4>%s</h4><b>%s</b><p><small>%s</small></p><ul>" %(movie[0].encode("utf-8"), movie[1].encode("utf-8"), movie[2].encode("utf-8")))
+            f.write("<li><h1>%s</h1><b>%s</b><p>%s</p><ul>" %(movie[0].encode("utf-8"), movie[1].encode("utf-8"), movie[2].encode("utf-8")))
             for url in urls:
                 f.write("<div align=left><a href=\"%s\">%s</a></div><div align=right><i>%s</i></div>" 
                     %(url[2].encode("utf-8"), url[0].encode("utf-8"), url[1].encode("utf-8")))
