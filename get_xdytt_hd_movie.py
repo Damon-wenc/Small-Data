@@ -11,7 +11,7 @@ import urllib2
 import lxml.html as parser
 from gevent import monkey; monkey.patch_socket()
 from gevent.pool import Pool
-pool = Pool(30)
+pool = Pool(10)
 
 
 # GLOBAL VARIABLES
@@ -70,15 +70,18 @@ def Analysis_single_movie(url):
         return -1
 
     #Pre check #1: Check if HD("BluRay") resources exists
-        if "BluRay" not in htmlSource:
-            return 1
+    if "BluRay" not in htmlSource:
+        return 1
 
     try:
         html = parser.document_fromstring(htmlSource)
 
         #Pre check #2: skip the vote of movie which is lower than expected
         vote_value = html.xpath("//div[1]/div[2]/div[3]/span[2]/text()")
-        vote = "%s" %vote_value[0]
+        if len(vote_value) != 0:
+            vote = "%s" %vote_value[0]
+        else:
+            return 1
 
         try:
             vote = float(vote)
@@ -89,13 +92,18 @@ def Analysis_single_movie(url):
             return 1
 
         movie_name    = html.xpath("//div/div/div[1]/h1/text()")
-        try:
-            movie_summary = html.xpath("//*[@id='summary']/p/text()")
-        except:
-            movie_summary = ["暂无介绍"]
+        movie_summary = html.xpath("//*[@id='summary']/p/text()")
         titles        = html.xpath("//li[*]/span[1]/a[1]/@title")
         magnets       = html.xpath("//li[*]/span[1]/a[2]/@href")
         sizes         = html.xpath("//li[*]/span[2]/span/text()")
+
+        if len(titles) == 0:
+            #In this situation, no magnet resources exsits, skip this movie
+            return 1
+        if len(movie_summary) == 0:
+            movie_summary = []
+            movie_summary.append("暂无介绍".decode("utf-8"))
+
         movie_info.append("%s" %movie_name[0])
         movie_info.append("%.1f" %vote)
         movie_info.append("%s" %movie_summary[0])
