@@ -57,64 +57,35 @@ def Analysis_single_movie(url):
 
     try:
         #Due to the bandwitdh, we need a timeout method to 
-        resp = urllib2.urlopen(url, timeout = 10000)
+        req = urllib2.Request(url, headers = HEADERS)
+        resp = urllib2.urlopen(req, timeout = 10000)
         htmlSource = resp.read()
     except:
         print "Analysis url[%s] failed." %url
         return -1
 
-    #Pre check #1: Check if HD("BluRay") resources exists
-    if "BluRay" not in htmlSource:
-        return 1
-
     try:
         html = parser.document_fromstring(htmlSource)
 
         #Pre check #2: skip the vote of movie which is lower than expected
-        vote_value = html.xpath("//div[1]/div[2]/div[3]/span[2]/text()")
-        if len(vote_value) != 0:
-            vote = "%s" %vote_value[0]
-        else:
-            return 1
-
-        try:
-            vote = float(vote)
-        except:
-            return 1
-
-        if vote < VOTE_ThRESHOLD:
-            return 1
-
-        movie_name    = html.xpath("//div/div/div[1]/h1/text()")
-        movie_summary = html.xpath("//*[@id='summary']/p/text()")
-        titles        = html.xpath("//li[*]/span[1]/a[1]/@title")
-        magnets       = html.xpath("//li[*]/span[1]/a[2]/@href")
-        sizes         = html.xpath("//li[*]/span[2]/span/text()")
-
-        if len(titles) == 0:
-            #In this situation, no magnet resources exsits, skip this movie
-            return 1
-        if len(movie_summary) == 0:
-            movie_summary = []
-            movie_summary.append("暂无介绍".decode("utf-8"))
+        vote_value    = html.xpath("//p[*]/span[10]/text()")
+        movie_name    = html.xpath("//div[1]/h1/text()")
+        movie_link    = html.xpath("//p[*]/span[11]/text()")
+        titles        = html.xpath("//p[*]//a/span/text()")
+        magnets       = html.xpath("//p[*]//a/@href")
 
         movie_info.append("%s" %movie_name[0])
-        movie_info.append("%.1f" %vote)
-        movie_info.append("%s" %movie_summary[0])
+        movie_info.append("%s" %vote_value[0])
 
         index = 0
         magnet_info = []
-        found_title = []
 
         for title in titles:  
-            if "BluRay" in title and "1080P" in title:
+            if "BluRay" in title and "1080p" in title:
                 tmp_info = []
                 #sometimes magnets are duplicated
-                if "%s" %titles[index][5:] not in found_title:
-                    found_title.append("%s" %titles[index][5:])
-                    tmp_info.append("%s" %titles[index][5:])
-                    tmp_info.append("%s" %sizes[index])
-                    tmp_info.append("%s" %magnets[index])
+                tmp_info.append("%s" %titles[index])
+                tmp_info.append("%s" %magnets[index])
 
                 if len(tmp_info):
                     magnet_info.append(tmp_info)
@@ -136,6 +107,8 @@ def Analysis_single_movie(url):
 
 def Analysis_movies():
     global g_movie_urls
+    #g_movie_urls = ["http://gaoqing.la/youth.html", "http://gaoqing.la/the-gift.html"]
+    g_movie_urls = ["http://gaoqing.la/the-gift.html"]
 
     pool.map(Analysis_single_movie, g_movie_urls)
 
@@ -164,8 +137,8 @@ def Save_to_html():
         f.close()
 
 def run():
-    get_movie_urls()
-    #Analysis_movies()
+    #get_movie_urls()
+    Analysis_movies()
     #Save_to_html()
 
 if __name__ == "__main__":
