@@ -108,7 +108,7 @@ def Analysis_single_movie(url):
 def Analysis_movies():
     global g_movie_urls
     #g_movie_urls = ["http://gaoqing.la/youth.html", "http://gaoqing.la/the-gift.html"]
-    g_movie_urls = ["http://gaoqing.la/the-gift.html"]
+    #g_movie_urls = ["http://gaoqing.la/the-gift.html"]
 
     pool.map(Analysis_single_movie, g_movie_urls)
 
@@ -118,18 +118,18 @@ def Save_to_html():
     global g_movie_infos
     print "There are %d movies" %len(g_movie_infos)
 
-    html_head = "<!DOCTYPE html><html><head><meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\"><style type=\"text/css\"> body {margin: 60px;} h1 {font-size: 20px;} b, p,div {font-size: 16px;} </style><title>xdytt.com小电影天堂FHD索引</title></head><body><ol>"
+    html_head = "<!DOCTYPE html><html><head><meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\"><style type=\"text/css\"> body {margin: 60px;} h1 {font-size: 20px;} b, p,div {font-size: 16px;} </style><title>gaoqingla网1080P索引</title></head><body><ol>"
     html_end = "</ol></body></html>"
 
     try:
-        f = open("movie_info.html", "w")
+        f = open("gaoqingla_info.html", "w")
         f.write(html_head)
         for movie in g_movie_infos:
-            urls = movie[3]
-            f.write("<li><h1>%s</h1><b>%s</b><p>%s</p><ul>" %(movie[0].encode("utf-8"), movie[1].encode("utf-8"), movie[2].encode("utf-8")))
+            urls = movie[2]
+            f.write("<li><h1>%s</h1><b>%s</b><ul>" %(movie[0].encode("utf-8"), movie[1].encode("utf-8")))
             for url in urls:
-                f.write("<div align=left><a href=\"%s\">%s</a></div><div align=right><i>%s</i></div>" 
-                    %(url[2].encode("utf-8"), url[0].encode("utf-8"), url[1].encode("utf-8")))
+                f.write("<div align=left><a href=\"%s\">%s</a></div>" 
+                    %(url[1].encode("utf-8"), url[0].encode("utf-8")))
             f.write("</ul></li>")
         f.write(html_end)
 
@@ -137,9 +137,9 @@ def Save_to_html():
         f.close()
 
 def run():
-    #get_movie_urls()
+    get_movie_urls()
     Analysis_movies()
-    #Save_to_html()
+    Save_to_html()
 
 if __name__ == "__main__":
     from timeit import Timer
