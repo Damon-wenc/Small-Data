@@ -9,7 +9,7 @@ import urllib2
 import lxml.html as parser
 from gevent import monkey; monkey.patch_socket()
 from gevent.pool import Pool
-pool = Pool(10)
+pool = Pool(2)
 
 #网站禁止爬虫，需加一个表头伪装浏览器头
 HEADERS = {'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}
@@ -58,7 +58,7 @@ def Analysis_single_movie(url):
     try:
         #Due to the bandwitdh, we need a timeout method to 
         req = urllib2.Request(url, headers = HEADERS)
-        resp = urllib2.urlopen(req, timeout = 10000)
+        resp = urllib2.urlopen(req, timeout = 100000)
         htmlSource = resp.read()
     except:
         print "Analysis url[%s] failed." %url
@@ -68,27 +68,38 @@ def Analysis_single_movie(url):
         html = parser.document_fromstring(htmlSource)
 
         #Pre check #2: skip the vote of movie which is lower than expected
+        #some movies don't have a vote number
         vote_value    = html.xpath("//p[*]/span[10]/text()")
+        if len(vote_value) == 0:
+            vote_value    = ["none", ]
         movie_name    = html.xpath("//div[1]/h1/text()")
+        #some movies don't have a douban link
         movie_link    = html.xpath("//p[*]/span[11]/text()")
-        titles        = html.xpath("//p[*]//a/span/text()")
-        magnets       = html.xpath("//p[*]//a/@href")
-
+        if len(movie_link) == 0:
+            movie_link    = ["none", ]
+        titles        = html.xpath("//*[@id='post_content']/p[*]//a//text()")
+        magnets       = html.xpath("//*[@id='post_content']/p[*]//a/@href")
         movie_info.append("%s" %movie_name[0])
         movie_info.append("%s" %vote_value[0])
-
         index = 0
         magnet_info = []
 
-        for title in titles:  
-            if "BluRay" in title and "1080p" in title:
+        for magnet in magnets:
+            #print index, titles[index], magnets[index]
+            if True:#"BluRay" in title and "1080p" in title:
                 tmp_info = []
-                #sometimes magnets are duplicated
-                tmp_info.append("%s" %titles[index])
-                tmp_info.append("%s" %magnets[index])
 
-                if len(tmp_info):
+                #sometimes titles are split into two parts)
+                if len(titles) == len(magnets) * 2:
+                    tmp_info.append("%s%s" %(titles[index * 2], titles[index * 2 + 1]))
+                    tmp_info.append("%s" %magnets[index])
+                else:
+                    tmp_info.append("%s" %titles[index])
+                    tmp_info.append("%s" %magnets[index])
+
+                if len(tmp_info) > 0 and "BluRay" in tmp_info[0] and "1080p" in tmp_info[0]:
                     magnet_info.append(tmp_info)
+
             index += 1
 
         if len(magnet_info):
@@ -102,13 +113,15 @@ def Analysis_single_movie(url):
         return 0
 
     except:
-        print "Get movie[%s] info failed, maybe unique html format, please check it manually." %url
+        print "Get movie[%s] info failed, maybe unique html format OR resources are failed, please check it manually." %url
         return -1
 
 def Analysis_movies():
     global g_movie_urls
-    #g_movie_urls = ["http://gaoqing.la/youth.html", "http://gaoqing.la/the-gift.html"]
-    #g_movie_urls = ["http://gaoqing.la/the-gift.html"]
+
+    #g_movie_urls = ["http://gaoqing.la/inside-out.html", "http://gaoqing.la/knock-knock.html"]
+    #g_movie_urls = ["http://gaoqing.la/jurassic-world.html"]
+    #g_movie_urls = ["http://gaoqing.la/vendetta-2.html"]
 
     pool.map(Analysis_single_movie, g_movie_urls)
 
