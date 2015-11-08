@@ -68,19 +68,21 @@ def Analysis_single_movie(url):
         html = parser.document_fromstring(htmlSource)
 
         #Pre check #2: skip the vote of movie which is lower than expected
-        #some movies don't have a vote number
-        vote_value    = html.xpath("//p[*]/span[10]/text()")
-        if len(vote_value) == 0:
-            vote_value    = ["none", ]
+        #a lot of movies don't have a vote number...
+        # vote_value    = html.xpath("//p[*]/span[10]/text()")
+        # if len(vote_value) == 0:
+        #     vote_value    = ["none", ]
         movie_name    = html.xpath("//div[1]/h1/text()")
-        #some movies don't have a douban link
-        movie_link    = html.xpath("//p[*]/span[11]/text()")
-        if len(movie_link) == 0:
-            movie_link    = ["none", ]
+        #lots of movies don't have a douban link...
+        # movie_link    = html.xpath("//p[*]/span[11]/text()")
+        # if len(movie_link) == 0:
+        #     movie_link    = ["none", ]
+
         titles        = html.xpath("//*[@id='post_content']/p[*]//a//text()")
-        magnets       = html.xpath("//*[@id='post_content']/p[*]//a/@href")
+        magnets       = html.xpath("//*[@id='post_content']/p[*]//a[@rel='external nofollow']/@href")
         movie_info.append("%s" %movie_name[0])
-        movie_info.append("%s" %vote_value[0])
+        #movie_info.append("%s" %vote_value[0])
+
         index = 0
         magnet_info = []
 
@@ -113,7 +115,8 @@ def Analysis_single_movie(url):
         return 0
 
     except:
-        print "Get movie[%s] info failed, maybe unique html format OR resources are failed, please check it manually." %url
+        #too many f**king strange format, I give up. Good job.
+        #print "Get movie[%s] info failed, maybe unique html format OR resources are failed, please check it manually." %url
         return -1
 
 def Analysis_movies():
@@ -121,7 +124,7 @@ def Analysis_movies():
 
     #g_movie_urls = ["http://gaoqing.la/inside-out.html", "http://gaoqing.la/knock-knock.html"]
     #g_movie_urls = ["http://gaoqing.la/jurassic-world.html"]
-    #g_movie_urls = ["http://gaoqing.la/vendetta-2.html"]
+    #g_movie_urls = ["http://gaoqing.la/the-chart-of-love.html"]
 
     pool.map(Analysis_single_movie, g_movie_urls)
 
@@ -138,8 +141,8 @@ def Save_to_html():
         f = open("gaoqingla_info.html", "w")
         f.write(html_head)
         for movie in g_movie_infos:
-            urls = movie[2]
-            f.write("<li><h1>%s</h1><b>%s</b><ul>" %(movie[0].encode("utf-8"), movie[1].encode("utf-8")))
+            urls = movie[1]
+            f.write("<li><h1>%s</h1><ul>" %(movie[0].encode("utf-8")))
             for url in urls:
                 f.write("<div align=left><a href=\"%s\">%s</a></div>" 
                     %(url[1].encode("utf-8"), url[0].encode("utf-8")))
