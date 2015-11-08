@@ -67,40 +67,32 @@ def Analysis_single_movie(url):
     try:
         html = parser.document_fromstring(htmlSource)
 
-        #Pre check #2: skip the vote of movie which is lower than expected
         #a lot of movies don't have a vote number...
         # vote_value    = html.xpath("//p[*]/span[10]/text()")
-        # if len(vote_value) == 0:
-        #     vote_value    = ["none", ]
         movie_name    = html.xpath("//div[1]/h1/text()")
         #lots of movies don't have a douban link...
         # movie_link    = html.xpath("//p[*]/span[11]/text()")
-        # if len(movie_link) == 0:
-        #     movie_link    = ["none", ]
 
         titles        = html.xpath("//*[@id='post_content']/p[*]//a//text()")
         magnets       = html.xpath("//*[@id='post_content']/p[*]//a[@rel='external nofollow']/@href")
         movie_info.append("%s" %movie_name[0])
-        #movie_info.append("%s" %vote_value[0])
 
         index = 0
         magnet_info = []
 
         for magnet in magnets:
-            #print index, titles[index], magnets[index]
-            if True:#"BluRay" in title and "1080p" in title:
-                tmp_info = []
+            tmp_info = []
 
-                #sometimes titles are split into two parts)
-                if len(titles) == len(magnets) * 2:
-                    tmp_info.append("%s%s" %(titles[index * 2], titles[index * 2 + 1]))
-                    tmp_info.append("%s" %magnets[index])
-                else:
-                    tmp_info.append("%s" %titles[index])
-                    tmp_info.append("%s" %magnets[index])
+            #sometimes titles are split into two parts)
+            if len(titles) == len(magnets) * 2:
+                tmp_info.append("%s%s" %(titles[index * 2], titles[index * 2 + 1]))
+                tmp_info.append("%s" %magnets[index])
+            else:
+                tmp_info.append("%s" %titles[index])
+                tmp_info.append("%s" %magnets[index])
 
-                if len(tmp_info) > 0 and "BluRay" in tmp_info[0] and "1080p" in tmp_info[0]:
-                    magnet_info.append(tmp_info)
+            if len(tmp_info) > 0 and "BluRay" in tmp_info[0] and "1080p" in tmp_info[0]:
+                magnet_info.append(tmp_info)
 
             index += 1
 
@@ -121,10 +113,6 @@ def Analysis_single_movie(url):
 
 def Analysis_movies():
     global g_movie_urls
-
-    #g_movie_urls = ["http://gaoqing.la/inside-out.html", "http://gaoqing.la/knock-knock.html"]
-    #g_movie_urls = ["http://gaoqing.la/jurassic-world.html"]
-    #g_movie_urls = ["http://gaoqing.la/the-chart-of-love.html"]
 
     pool.map(Analysis_single_movie, g_movie_urls)
 
