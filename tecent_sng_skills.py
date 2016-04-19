@@ -5,7 +5,7 @@ import urllib2
 from collections import OrderedDict
 
 
-######## construct skill keywords Dict ########
+''' construct skill keywords Dict '''
 skill_heat = OrderedDict()
 skills_array = ['c/c++', 'python', 'mysql', 'tcp/ip', 'cdn', 'linux', 'nosql', 
                 'hadoop', 'spark', 'storm', 'lbs', '经验', '架构', '容灾', '优化', '脚本', 
@@ -19,8 +19,7 @@ skills_array = ['c/c++', 'python', 'mysql', 'tcp/ip', 'cdn', 'linux', 'nosql',
 for item in skills_array:
     skill_heat[item] = 0
 
-
-######## parse web(url) and update keywords heat in Dict ########
+''' parse web(url) and update keywords heat in Dict '''
 def web_parse(url):
     html = urllib2.urlopen(url).read()
 
@@ -35,15 +34,33 @@ def web_parse(url):
         if html.lower().find(name) != -1:
             skill_heat[name] += 1
 
+''' show keywords heat '''
+def display_result():
+    print 'skills heat are as below:\n'
+    #sorted result
+    for name, address in OrderedDict(sorted(skill_heat.items(), key=lambda t: t[1])).items():
+        print 'heat [%d]\t skill: %s ' %(address, name.decode('utf-8'))
 
-######## main function ########
+    print '为了高匹配 努力！'
+    
+''' 
+main function
+1st step: get the number of SNG postion
+2nd step: analysis each page by func 'web_parse'
+3rd step: show the result
+'''
 def get_info():
     start_url = 'http://hr.tencent.com/position.php?keywords=SNG+%E5%90%8E%E5%8F%B0&lid=2218&tid=0'
 
+    # regulation to find the number of position
     position_num_re = re.compile(r'class="lightblue total">(\d+?)</span>个职位')
+    
+    # regulation to get every url of postion for further analysis
     position_url_re = re.compile(r'<a target="_blank" href="(.+?)">SNG')
+    
     position_num = 0
     position_url = ''
+    
     html = urllib2.urlopen(start_url).read()
     for x in position_num_re.findall(html):
         position_num = int(x)   #find how many positions are avaliable
@@ -59,20 +76,6 @@ def get_info():
         index += 1
     
     display_result()
-
-
-######## show keywords heat ########
-def display_result():
-    print 'skills heat are as below:\n'
-    #sorted result
-    for name, address in OrderedDict(sorted(skill_heat.items(), key=lambda t: t[1])).items():
-        print 'skill: %s\t\t\t heat [%d]' %(name.decode('utf-8'), address)
-
-    #un-sorted result
-    #for name, address in skill_heat.items():
-    #    print 'skill: %-20s heat: [%d]' %(name.decode('utf-8'), address)
-
-    print '为了高匹配^_^o~ 努力！'
 
 
 if __name__ == '__main__':

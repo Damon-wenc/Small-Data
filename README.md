@@ -1,7 +1,7 @@
 # Small-Data
 In honor of **big data** :D
 
-I've just got some 'small data' here. There are several small programs about getting, parsing and analysing info on some websites. As most cases are Chinese sites, I'll describe my ideas in Chinese~ You may read my code for more information ~\(≧▽≦)/~
+I've got some 'small data' here. There are several small programs about getting, parsing and analysing info on some websites. As most cases are Chinese sites, I'll describe all my ideas in Chinese~ You may read my code for more information ~\(≧▽≦)/~
 
 ## 说明
 验证版本: Python V2.7.6
@@ -32,21 +32,21 @@ I've just got some 'small data' here. There are several small programs about get
 详情请自行阅读及运行movie_years.py
 
 ### 2.tecent_sng_skills.py
-这个.. 是想找出腾讯SNG部后台招聘所需要哪些技能, 期待针对性学习一下吧。程序通过遍历所有[SNG+深圳+后台](http://hr.tencent.com/position.php?keywords=SNG+%E5%90%8E%E5%8F%B0&lid=2218&tid=0)招聘网页, 对其中skills_array数组中的关键字（最偷懒且不严谨的做法）进行热度记录, 最后按照热度从低到高的顺序排列出来,.提高匹配度咯。
+这个..实用性来说肯定是自娱自乐。目的是想找出腾讯SNG部后台招聘所需要哪些技能, 期待针对性学习一下。程序通过遍历所有[SNG+深圳+后台](http://hr.tencent.com/position.php?keywords=SNG+%E5%90%8E%E5%8F%B0&lid=2218&tid=0)招聘网页, 对其中skills_array数组中的关键字（最偷懒且不严谨的做法）进行热度记录, 最后按照热度从低到高的顺序排列出来,提高匹配度咯。
 
 下面是一小段Python输出
 
 > ......
 
-> skill: 大容量网络			 heat [9]
+> heat [24]	 skill: 优化
 
-> skill: tcp/ip			 heat [10]
+> heat [27]	 skill: 架构
 
-> skill: 数据结构			 heat [11]
+> heat [31]	 skill: 沟通
 
-> skill: 网络安全			 heat [11]
+> heat [32]	 skill: c/c++
 
-> skill: c/c++			 heat [21]
+> heat [34]	 skill: linux
 
 > ......
 
