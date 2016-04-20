@@ -21,7 +21,7 @@ g_movie_urls      = []
 g_movie_infos     = []
 
 
-
+''' get and save all specific movie urls in g_movie_urls[] for further analysis '''
 def get_movie_urls():
     global OUT_OF_RANGE_FLAG, g_movie_urls
     page_index = 1
@@ -57,6 +57,7 @@ def get_movie_urls():
 
     return 0
 
+''' save info of target movies to g_movie_infos[] '''
 def Analysis_single_movie(url):
     global VOTE_ThRESHOLD, g_movie_infos
     movie_info = []
@@ -156,6 +157,7 @@ def Analysis_movies():
 
     return 0
  
+''' save result to HTML file '''
 def Save_to_html():
     global g_movie_infos
     print "There are %d movies" %len(g_movie_infos)
@@ -182,6 +184,7 @@ def run():
     get_movie_urls()
     Analysis_movies()
     Save_to_html()
+
 
 if __name__ == "__main__":
     from timeit import Timer
