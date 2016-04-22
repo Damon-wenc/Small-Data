@@ -20,27 +20,35 @@
 
     <section class="main-content">
       <h1>
-<a id="small-data" class="anchor" href="#small-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>Small-Data</h1>
+<a id="small-data" class="anchor" href="#small-data" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Small-Data</h1>
 
 <p>In honor of <strong>big data</strong> :D</p>
 
-<p>I've just got some 'small data' here. There are several small programs about getting, parsing and analysing info on some websites. As most cases are Chinese sites, I'll describe my ideas in Chinese~ You may read my code for more information ~(≧▽≦)/~</p>
+<p>I've got some 'small data' here. There are several small programs about getting, parsing and analysing info on some websites. As most cases are Chinese sites, I'll describe all my ideas in Chinese~ You may read my code for more information ~(≧▽≦)/~</p>
 
 <h2>
-<a id="说明" class="anchor" href="#%E8%AF%B4%E6%98%8E" aria-hidden="true"><span class="octicon octicon-link"></span></a>说明</h2>
+<a id="说明" class="anchor" href="#%E8%AF%B4%E6%98%8E" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>说明</h2>
 
 <p>验证版本: Python V2.7.6</p>
 
 <p>以下的只是简单的几个Python程序, 用以收集一些网站上不严谨的信息, 仅做参考~</p>
 
 <h3>
-<a id="1-movie_yearspy" class="anchor" href="#1-movie_yearspy" aria-hidden="true"><span class="octicon octicon-link"></span></a>1. movie_years.py</h3>
+<a id="1-movie_yearspy" class="anchor" href="#1-movie_yearspy" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1. movie_years.py</h3>
 
-<p>这个是我从<a href="http://movie.douban.com/top250?start=0&amp;filter=&amp;type=">豆瓣电影TOP250</a>系列直接抓取下来的, 目的是想查看一下伟大电影的诞生与经济大小年是否有对应关系. 当然这个实现方法明显是不合理的, 一是我的样品库太小了, 二是好多好电影, 特别是近年的, 或许需要时间及机缘才会被社会所接纳对吧(例如大话西游), 所以这里只是仅供一个构思, 主要是练习一下Python对网页的抓取.</p>
+<p>这个是我从<a href="http://movie.douban.com/top250?start=0&amp;filter=&amp;type=">豆瓣电影TOP250</a>系列直接抓取下来的, 目的是想查看一下伟大电影的诞生与经济大小年是否有对应关系. 当然这个实现方法明显是不合理的, 一是我的样品库太小了, 二是好多好电影, 特别是近年的, 或许需要时间及机缘才会被社会所接纳对吧(例如大话西游), 所以这里只是仅供一个构思, 主要是练习一下Python对网页的抓取。这第一个爬虫简单得略粗糙了，权当练习吧。</p>
 
 <p>下面是一小段Python输出</p>
 
 <blockquote>
+<p>电影名   年代   地区   评分</p>
+
+<p>肖申克的救赎   1994   美国   9.6</p>
+
+<p>这个杀手不太冷   1994   法国   9.4</p>
+
+<p>阿甘正传   1994   美国   9.4</p>
+
 <p>......</p>
 
 <p>year 1994 has 12 great moives</p>
@@ -60,25 +68,29 @@
 
 <p>详情请自行阅读及运行movie_years.py</p>
 
-<h3>
-<a id="2tecent_sng_skillspy" class="anchor" href="#2tecent_sng_skillspy" aria-hidden="true"><span class="octicon octicon-link"></span></a>2.tecent_sng_skills.py</h3>
+<p><em>===update===</em></p>
 
-<p>这个.. 是想找出腾讯SNG部后台招聘所需要哪些技能, 期待针对性学习一下吧。程序通过遍历所有<a href="http://hr.tencent.com/position.php?keywords=SNG+%E5%90%8E%E5%8F%B0&amp;lid=2218&amp;tid=0">SNG+深圳+后台</a>招聘网页, 对其中skills_array数组中的关键字（最偷懒且不严谨的做法）进行热度记录, 最后按照热度从低到高的顺序排列出来,.提高匹配度咯。</p>
+<p><em>像这种利用正则表达式来爬网页的，很可能一段时间过后网页规则就变了，爬不下来了。所以要么掌握方法，要么及时行乐。</em></p>
+
+<h3>
+<a id="2tecent_sng_skillspy" class="anchor" href="#2tecent_sng_skillspy" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>2.tecent_sng_skills.py</h3>
+
+<p>这个..实用性来说肯定是自娱自乐。目的是想找出腾讯SNG部后台招聘所需要哪些技能, 期待针对性学习一下。程序通过遍历所有<a href="http://hr.tencent.com/position.php?keywords=SNG+%E5%90%8E%E5%8F%B0&amp;lid=2218&amp;tid=0">SNG+深圳+后台</a>招聘网页, 对其中skills_array数组中的关键字（最偷懒且不严谨的做法）进行热度记录, 最后按照热度从低到高的顺序排列出来。努力提高匹配度咯。</p>
 
 <p>下面是一小段Python输出</p>
 
 <blockquote>
 <p>......</p>
 
-<p>skill: 大容量网络             heat [9]</p>
+<p>heat [24]  skill: 优化</p>
 
-<p>skill: tcp/ip          heat [10]</p>
+<p>heat [27]  skill: 架构</p>
 
-<p>skill: 数据结构            heat [11]</p>
+<p>heat [31]  skill: 沟通</p>
 
-<p>skill: 网络安全            heat [11]</p>
+<p>heat [32]  skill: c/c++</p>
 
-<p>skill: c/c++           heat [21]</p>
+<p>heat [34]  skill: linux</p>
 
 <p>......</p>
 </blockquote>
@@ -86,7 +98,7 @@
 <p>预知详情如何, 还请亲自运行程序及查看源码</p>
 
 <h3>
-<a id="3爬取一个电影网站感谢小电影天堂的高清资源" class="anchor" href="#3%E7%88%AC%E5%8F%96%E4%B8%80%E4%B8%AA%E7%94%B5%E5%BD%B1%E7%BD%91%E7%AB%99%E6%84%9F%E8%B0%A2%E5%B0%8F%E7%94%B5%E5%BD%B1%E5%A4%A9%E5%A0%82%E7%9A%84%E9%AB%98%E6%B8%85%E8%B5%84%E6%BA%90" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.爬取一个电影网站（感谢<a href="http://www.xdytt.com">小电影天堂</a>)的高清资源</h3>
+<a id="3爬取一个电影网站感谢小电影天堂的高清资源" class="anchor" href="#3%E7%88%AC%E5%8F%96%E4%B8%80%E4%B8%AA%E7%94%B5%E5%BD%B1%E7%BD%91%E7%AB%99%E6%84%9F%E8%B0%A2%E5%B0%8F%E7%94%B5%E5%BD%B1%E5%A4%A9%E5%A0%82%E7%9A%84%E9%AB%98%E6%B8%85%E8%B5%84%E6%BA%90" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>3.爬取一个电影网站（感谢<a href="http://www.xdytt.com">小电影天堂</a>)的高清资源</h3>
 
 <p>想看好电影，新的电影可以尽可能地在影院观看，贡献票房，老的经典大片就只有在网上，咳咳，搜一下资源了。发现一个很好的网站：<a href="http://www.xdytt.com">小电影天堂</a>，真心希望它能持久并坚挺，不过它的同行倒是已经有数不清的先烈牺牲了。所以这里打算利用下Python的爬虫，保存一部分电影资源下来，以备后用。</p>
 
@@ -103,15 +115,15 @@
 <p>需要注意的点有：</p>
 
 <ol>
-<li>因为是爬别人的网站，所以要注意好心人可能是建站按流量走的，所以尽量不要反复无意义的去爬网页，且爬的时候控制下速度，别丧心病狂地开多线程... 要做到良心限速</li>
+<li>因为是爬别人的网站，所以要注意好心人可能是建站按流量走的，所以尽量不要反复无意义的去爬网页，且爬的时候控制下速度，别丧心病狂地开多线程... 要做到良心限速。</li>
 <li>可能是网速限制，或者是网站限制连接数，发现在用gevent爬网页在同时“线程数”比较多的时候，会报gevent的诡异的错误。由于spawn没有连接数限制，所以切换到Pool，来限制下连接数。在家里测试6M网络最多开40路同时就能跑满。</li>
 <li>同时在打开网页调用urllib2时也要相应的增加超时时间，协程多了相对有点慢。</li>
 </ol>
 
-<p>随脚本一起上传了结果文档：movie_info.html，发现速度还不错，从3000多个链接爬675个6.0分以上的1080P电影下来一共花费10分钟多一点，蹲个坑就搞定了... 而且是在限速了的情况下。攒着慢慢看 XD</p>
+<p>随脚本一起上传了结果文档：movie_info.html(<em>另存为后用浏览器打开格式就清晰了</em>)，发现速度还不错，从3000多个链接爬675个6.0分以上的1080P电影下来一共花费10分钟多一点，蹲个坑就搞定了... 而且是在限速了的情况下。攒着慢慢看 XD</p>
 
 <h3>
-<a id="4爬取另一个高清网站" class="anchor" href="#4%E7%88%AC%E5%8F%96%E5%8F%A6%E4%B8%80%E4%B8%AA%E9%AB%98%E6%B8%85%E7%BD%91%E7%AB%99" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.爬取另一个高清网站</h3>
+<a id="4爬取另一个高清网站" class="anchor" href="#4%E7%88%AC%E5%8F%96%E5%8F%A6%E4%B8%80%E4%B8%AA%E9%AB%98%E6%B8%85%E7%BD%91%E7%AB%99" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>4.爬取另一个高清网站</h3>
 
 <p>发现了另一个高清网站，挺好的<a href="http://gaoqing.la">高清网</a>，打算故技重施保存下... 以为是个简单的修改下爬取规则就好了，结果发现了下面的问题：</p>
 
@@ -122,6 +134,8 @@
 </ol>
 
 <p>技术没有什么变化，所以参照上一篇功能，就不写了哈。</p>
+
+<p>结果也上传了：gaoqingla_info.html，同理，在GitHub打开怪怪的，下载后排版就正常了。</p>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/Damon-wenc/Small-Data">Small-data</a> is maintained by <a href="https://github.com/Damon-wenc">Damon-wenc</a>.</span>
