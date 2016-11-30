@@ -38,7 +38,7 @@ I've got some 'small data' here. There are several small programs about getting,
 
 
 
-结果也正是说明这不靠谱╮(╯▽╰)╭, 或许可以换个思路? or 再改善下?
+结果也正是说明这不靠谱╮(╯▽╰)╭
 
 详情请自行阅读及运行movie_years.py
 
