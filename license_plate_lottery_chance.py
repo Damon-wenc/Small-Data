@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 def yaohao_rate():
-    Got_It      = 0.005
+    Got_It      = 0.0045
 
     print "\n\n" + "*" * 66
     print "  \t单身狗寂寞摇\t\t\t两个人摇啊摇"
